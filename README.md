@@ -1,65 +1,70 @@
+Sure! Here’s a concise README for your project:
+
+---
+
 # FukuiNet: Chebyshev Graph-Based KAN for Molecular Reactivity Prediction
 
-<a target="_blank" href="https://cookiecutter-data-science.drivendata.org/">
-    <img src="https://img.shields.io/badge/CCDS-Project%20template-328F97?logo=cookiecutter" />
-</a>
+This project introduces FukuiNet, a machine learning model leveraging Chebyshev graph convolutions within a Kernel-based Attention Network (KAN) to predict Fukui indices for assessing molecular reactivity. 
 
+## Project Overview
 
-This project develops a machine learning model using Chebyshev graph convolutions within a Kernel-based Attention Network (KAN) to accurately predict Fukui indices, which are essential for assessing molecular reactivity in chemical reactions.
+- **Objective**: To develop an efficient and accurate model for predicting molecular reactivity using advanced graph-based techniques and kernel-based attention mechanisms.
+- **Key Features**: Utilizes Chebyshev polynomials and Kernel-based Attention Networks for enhanced performance and speed compared to traditional methods.
 
-## Project Organization
+## Project Structure
 
 ```
-├── LICENSE            <- Open-source license if one is chosen
-├── Makefile           <- Makefile with convenience commands like `make data` or `make train`
-├── README.md          <- The top-level README for developers using this project.
+├── LICENSE            <- License information
+├── Makefile           <- Convenience commands (e.g., `make train`)
+├── README.md          <- Project overview and instructions
 ├── data
-│   ├── external       <- Data from third party sources.
-│   ├── interim        <- Intermediate data that has been transformed.
-│   ├── processed      <- The final, canonical data sets for modeling.
-│   └── raw            <- The original, immutable data dump.
+│   ├── external       <- Third-party data
+│   ├── interim        <- Transformed data
+│   ├── processed      <- Final datasets for modeling
+│   └── raw            <- Original data
 │
-├── docs               <- A default mkdocs project; see www.mkdocs.org for details
+├── docs               <- Documentation
 │
-├── models             <- Trained and serialized models, model predictions, or model summaries
+├── models             <- Trained models and predictions
 │
-├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-│                         the creator's initials, and a short `-` delimited description, e.g.
-│                         `1.0-jqp-initial-data-exploration`.
-
-
-├── quantum_data_pre   <- Scripts needed for preparing quantum chemical calculations.
+├── notebooks          <- Jupyter notebooks for exploration
 │
-├── pyproject.toml     <- Project configuration file with package metadata for 
-│                         fukuinet:_chebyshev_graph_based_kan_for_molecular_reactivity_prediction and configuration for tools like black
+├── quantum_data_pre   <- Scripts for quantum chemical calculations
 │
-├── references         <- Data dictionaries, manuals, and all other explanatory materials.
+├── pyproject.toml     <- Project configuration
 │
-├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-│   └── figures        <- Generated graphics and figures to be used in reporting
+├── references         <- Data dictionaries and manuals
 │
-├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-│                         generated with `pip freeze > requirements.txt`
+├── reports            <- Analysis reports and figures
 │
-├── setup.cfg          <- Configuration file for flake8
+├── requirements.txt   <- Dependencies
 │
-└── fukuinet:_chebyshev_graph_based_kan_for_molecular_reactivity_prediction   <- Source code for use in this project.
-    │
-    ├── __init__.py             <- Makes fukuinet:_chebyshev_graph_based_kan_for_molecular_reactivity_prediction a Python module
-    │
-    ├── config.py               <- Store useful variables and configuration
-    │
-    ├── dataset.py              <- Scripts to download or generate data
-    │
-    ├── features.py             <- Code to create features for modeling
-    │
-    ├── modeling                
+├── setup.cfg          <- Flake8 configuration
+│
+└── fukuinet           <- Source code
+    ├── __init__.py    <- Makes `fukuinet` a Python module
+    ├── config.py      <- Configuration settings
+    ├── dataset.py     <- Data handling scripts
+    ├── features.py    <- Feature engineering
+    ├── modeling       
     │   ├── __init__.py 
-    │   ├── predict.py          <- Code to run model inference with trained models          
-    │   └── train.py            <- Code to train models
-    │
-    └── plots.py                <- Code to create visualizations
+    │   ├── predict.py <- Model inference code
+    │   └── train.py   <- Model training code
+    └── plots.py       <- Visualization scripts
 ```
 
---------
+## Installation
 
+1. Clone the repository: `git clone https://github.com/your-repo/fukuiNet.git`
+2. Install dependencies: `pip install -r requirements.txt`
+
+## Usage
+
+1. Prepare data using scripts in `quantum_data_pre`.
+2. Train the model using `modeling/train.py`.
+3. Evaluate predictions with `modeling/predict.py`.
+4. Visualize results using `plots.py`.
+
+## Dataset
+
+The dataset `QM_137k.parquet` is an enhanced version of QM9 with additional features for reactivity predictions, including the Conduction Dual Descriptor (CDD).
