@@ -1,0 +1,116 @@
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+
+  | Name           | Type  | Params
+-----------------------------------------
+0 | model_backbone | Model | 2.3 M 
+-----------------------------------------
+2.3 M     Trainable params
+0         Non-trainable params
+2.3 M     Total params
+9.096     Total estimated model params size (MB)
+SLURM auto-requeueing enabled. Setting signal handlers.
+cuda True
+NVIDIA GeForce RTX 3090
+Metric val_loss improved. New best score: 0.170
+Metric val_loss improved by 0.059 >= min_delta = 0.0. New best score: 0.111
+Metric val_loss improved by 0.034 >= min_delta = 0.0. New best score: 0.078
+Metric val_loss improved by 0.020 >= min_delta = 0.0. New best score: 0.058
+Metric val_loss improved by 0.013 >= min_delta = 0.0. New best score: 0.045
+Metric val_loss improved by 0.006 >= min_delta = 0.0. New best score: 0.039
+Metric val_loss improved by 0.003 >= min_delta = 0.0. New best score: 0.035
+Metric val_loss improved by 0.004 >= min_delta = 0.0. New best score: 0.031
+Metric val_loss improved by 0.001 >= min_delta = 0.0. New best score: 0.030
+Metric val_loss improved by 0.002 >= min_delta = 0.0. New best score: 0.028
+Metric val_loss improved by 0.001 >= min_delta = 0.0. New best score: 0.028
+Metric val_loss improved by 0.001 >= min_delta = 0.0. New best score: 0.027
+Metric val_loss improved by 0.001 >= min_delta = 0.0. New best score: 0.026
+Metric val_loss improved by 0.001 >= min_delta = 0.0. New best score: 0.026
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.025
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.025
+Metric val_loss improved by 0.001 >= min_delta = 0.0. New best score: 0.025
+Metric val_loss improved by 0.001 >= min_delta = 0.0. New best score: 0.024
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.024
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.023
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.023
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.023
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.023
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.022
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.022
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.022
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.022
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.022
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.021
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.021
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.021
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.021
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.021
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.021
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.021
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.021
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.021
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.021
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.021
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.020
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.020
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.020
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.020
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.020
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.020
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.020
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.020
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.019
+Monitored metric val_loss did not improve in the last 500 records. Best score: 0.019. Signaling Trainer to stop.
+Training time: 18:01:19

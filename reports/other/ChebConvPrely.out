@@ -1,0 +1,120 @@
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+Missing logger folder: tb_logs/ChebConvPrely
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+
+  | Name              | Type       | Params
+-------------------------------------------------
+0 | atom_preprocess   | ModuleList | 23.4 M
+1 | cheb_convolutions | ModuleList | 2.4 M 
+2 | postprocess       | ModuleList | 33.5 K
+3 | output_layer      | Linear     | 129   
+-------------------------------------------------
+25.9 M    Trainable params
+0         Non-trainable params
+25.9 M    Total params
+103.538   Total estimated model params size (MB)
+SLURM auto-requeueing enabled. Setting signal handlers.
+cuda True
+NVIDIA GeForce RTX 3090
+Model:
+ MoleculeModel(
+  (atom_preprocess): ModuleList(
+    (0): AtomEdgeInteraction(
+      (interaction): Linear(in_features=147, out_features=1700, bias=True)
+    )
+    (1): Sequential(
+      (atom_linear_1): Linear(in_features=1700, out_features=1700, bias=True)
+      (atom_bn_1): BatchNorm1d(1700, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (atom_activation_1): PReLU(num_parameters=1)
+      (atom_dropout_1): Dropout(p=0.0, inplace=False)
+    )
+    (2): Sequential(
+      (atom_linear_2): Linear(in_features=1700, out_features=1700, bias=True)
+      (atom_bn_2): BatchNorm1d(1700, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (atom_activation_2): PReLU(num_parameters=1)
+      (atom_dropout_2): Dropout(p=0.0, inplace=False)
+    )
+    (3): Sequential(
+      (atom_linear_3): Linear(in_features=1700, out_features=1700, bias=True)
+      (atom_bn_3): BatchNorm1d(1700, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (atom_activation_3): PReLU(num_parameters=1)
+      (atom_dropout_3): Dropout(p=0.0, inplace=False)
+    )
+    (4): Sequential(
+      (atom_linear_4): Linear(in_features=1700, out_features=1700, bias=True)
+      (atom_bn_4): BatchNorm1d(1700, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (atom_activation_4): PReLU(num_parameters=1)
+      (atom_dropout_4): Dropout(p=0.0, inplace=False)
+    )
+    (5): Sequential(
+      (atom_linear_5): Linear(in_features=1700, out_features=1700, bias=True)
+      (atom_bn_5): BatchNorm1d(1700, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (atom_activation_5): PReLU(num_parameters=1)
+      (atom_dropout_5): Dropout(p=0.0, inplace=False)
+    )
+    (6): Sequential(
+      (atom_linear_6): Linear(in_features=1700, out_features=1700, bias=True)
+      (atom_bn_6): BatchNorm1d(1700, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (atom_activation_6): PReLU(num_parameters=1)
+      (atom_dropout_6): Dropout(p=0.0, inplace=False)
+    )
+    (7): Sequential(
+      (atom_linear_7): Linear(in_features=1700, out_features=1700, bias=True)
+      (atom_bn_7): BatchNorm1d(1700, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (atom_activation_7): PReLU(num_parameters=1)
+      (atom_dropout_7): Dropout(p=0.0, inplace=False)
+    )
+    (8): Sequential(
+      (atom_linear_8): Linear(in_features=1700, out_features=1700, bias=True)
+      (atom_bn_8): BatchNorm1d(1700, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (atom_activation_8): PReLU(num_parameters=1)
+      (atom_dropout_8): Dropout(p=0.0, inplace=False)
+    )
+  )
+  (cheb_convolutions): ModuleList(
+    (0): ChebConv(1700, 128, K=10, normalization=sym)
+    (1): PReLU(num_parameters=1)
+    (2): ChebConv(128, 128, K=16, normalization=sym)
+    (3): PReLU(num_parameters=1)
+  )
+  (postprocess): ModuleList(
+    (0): Sequential(
+      (post_linear_0): Linear(in_features=128, out_features=128, bias=True)
+      (post_bn_0): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (post_activation_0): PReLU(num_parameters=1)
+      (post_dropout_0): Dropout(p=0.0, inplace=False)
+    )
+    (1): Sequential(
+      (post_linear_1): Linear(in_features=128, out_features=128, bias=True)
+      (post_bn_1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (post_activation_1): PReLU(num_parameters=1)
+      (post_dropout_1): Dropout(p=0.0, inplace=False)
+    )
+  )
+  (output_layer): Linear(in_features=128, out_features=1, bias=True)
+)
+Metric val_loss improved. New best score: 0.035
+Metric val_loss improved by 0.004 >= min_delta = 0.0. New best score: 0.031
+Metric val_loss improved by 0.002 >= min_delta = 0.0. New best score: 0.029
+Metric val_loss improved by 0.001 >= min_delta = 0.0. New best score: 0.028
+Metric val_loss improved by 0.001 >= min_delta = 0.0. New best score: 0.027
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.026
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.026
+Metric val_loss improved by 0.001 >= min_delta = 0.0. New best score: 0.025
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.025
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.025
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.025
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.024
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.024
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.024
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.024
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.024
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.024
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.023
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.023
+Metric val_loss improved by 0.000 >= min_delta = 0.0. New best score: 0.023
+Monitored metric val_loss did not improve in the last 5 records. Best score: 0.023. Signaling Trainer to stop.
+Время обучения: 16:48:36
