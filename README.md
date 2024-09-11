@@ -1,7 +1,3 @@
-Sure! Here’s a concise README for your project:
-
----
-
 # FukuiNet: Chebyshev Graph-Based KAN for Molecular Reactivity Prediction
 
 This project introduces FukuiNet, a machine learning model leveraging Chebyshev graph convolutions within a Kernel-based Attention Network (KAN) to predict Fukui indices for assessing molecular reactivity. 
