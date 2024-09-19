@@ -1,13 +1,14 @@
-import os
 import csv
-import torch
+import os
+
 import numpy as np
-from sklearn.metrics import mean_squared_error, r2_score
 import pytorch_lightning as pl
+import torch
+from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
-from torch_geometric.loader import DataLoader
 from torch.utils.data import Subset
 from torch_geometric.data import DataLoader as GeoDataLoader
+from torch_geometric.loader import DataLoader
 from tqdm import tqdm
 
 
@@ -25,8 +26,10 @@ class MoleculeDataModule(pl.LightningDataModule):
         _val_dataset (Subset): Validation subset of the dataset.
         _test_dataset (Subset): Test subset of the dataset.
     """
-    
-    def __init__(self, dataset, batch_size=128, val_split=0.1, test_split=0.2, num_workers=1):
+
+    def __init__(
+        self, dataset, batch_size=128, val_split=0.1, test_split=0.2, num_workers=1
+    ):
         super().__init__()
         self.dataset = dataset
         self.batch_size = batch_size
@@ -36,7 +39,7 @@ class MoleculeDataModule(pl.LightningDataModule):
         self._train_dataset = None
         self._val_dataset = None
         self._test_dataset = None
-    
+
     def setup(self, stage=None):
         """
         Splits the dataset into training, validation, and test subsets.
@@ -45,13 +48,19 @@ class MoleculeDataModule(pl.LightningDataModule):
             stage (str): Stage of the experiment ('fit', 'validate', 'test', etc.).
         """
         indices = list(range(len(self.dataset)))
-        train_val_indices, test_indices = train_test_split(indices, test_size=self.test_split, random_state=42)
-        train_indices, val_indices = train_test_split(train_val_indices, test_size=self.val_split / (1 - self.test_split), random_state=42)
-        
+        train_val_indices, test_indices = train_test_split(
+            indices, test_size=self.test_split, random_state=42
+        )
+        train_indices, val_indices = train_test_split(
+            train_val_indices,
+            test_size=self.val_split / (1 - self.test_split),
+            random_state=42,
+        )
+
         self.train_dataset = Subset(self.dataset, train_indices)
         self.val_dataset = Subset(self.dataset, val_indices)
         self.test_dataset = Subset(self.dataset, test_indices)
-    
+
     def train_dataloader(self):
         """
         Returns the training DataLoader.
@@ -59,8 +68,13 @@ class MoleculeDataModule(pl.LightningDataModule):
         Returns:
             DataLoader: DataLoader for training data.
         """
-        return DataLoader(self.train_dataset, batch_size=self.batch_size, shuffle=True, num_workers=self.num_workers)
-    
+        return DataLoader(
+            self.train_dataset,
+            batch_size=self.batch_size,
+            shuffle=True,
+            num_workers=self.num_workers,
+        )
+
     def val_dataloader(self):
         """
         Returns the validation DataLoader.
@@ -68,8 +82,13 @@ class MoleculeDataModule(pl.LightningDataModule):
         Returns:
             DataLoader: DataLoader for validation data.
         """
-        return DataLoader(self.val_dataset, batch_size=self.batch_size, shuffle=False, num_workers=self.num_workers)
-    
+        return DataLoader(
+            self.val_dataset,
+            batch_size=self.batch_size,
+            shuffle=False,
+            num_workers=self.num_workers,
+        )
+
     def test_dataloader(self):
         """
         Returns the test DataLoader.
@@ -77,7 +96,12 @@ class MoleculeDataModule(pl.LightningDataModule):
         Returns:
             DataLoader: DataLoader for test data.
         """
-        return DataLoader(self.test_dataset, batch_size=self.batch_size, shuffle=False, num_workers=self.num_workers)
+        return DataLoader(
+            self.test_dataset,
+            batch_size=self.batch_size,
+            shuffle=False,
+            num_workers=self.num_workers,
+        )
 
 
 def evaluate_model(model, data_module):
@@ -92,7 +116,7 @@ def evaluate_model(model, data_module):
         None: Prints the evaluation metrics.
     """
     test_dl = data_module.test_dataloader()
-    model.eval()  
+    model.eval()
     all_pred, all_true = [], []
 
     with torch.no_grad():
@@ -105,12 +129,14 @@ def evaluate_model(model, data_module):
     rmse = np.sqrt(mean_squared_error(all_true, all_pred))
     r2 = r2_score(all_true, all_pred)
 
-    print(f'Test RMSE: {rmse:.4f}')
-    print(f'Test R²: {r2:.4f}')
+    print(f"Test RMSE: {rmse:.4f}")
+    print(f"Test R²: {r2:.4f}")
 
 
 def evaluate_model_full(model, dataset, batch_size, num_workers):
-    dataloader = GeoDataLoader(dataset, batch_size=batch_size, shuffle=False, num_workers=8)
+    dataloader = GeoDataLoader(
+        dataset, batch_size=batch_size, shuffle=False, num_workers=8
+    )
     model.eval()
     all_pred, all_true = [], []
 
@@ -125,11 +151,11 @@ def evaluate_model_full(model, dataset, batch_size, num_workers):
     rmse = np.sqrt(mean_squared_error(all_true, all_pred))
     r2 = r2_score(all_true, all_pred)
 
-    print(f'Total RMSE: {rmse:.4f}')
-    print(f'Total R²: {r2:.4f}')
+    print(f"Total RMSE: {rmse:.4f}")
+    print(f"Total R²: {r2:.4f}")
 
 
-def create_hyperopt_dir(base_dir='hyperopt_'):
+def create_hyperopt_dir(base_dir="hyperopt_"):
     """
     Creates a new directory for storing hyperparameter optimization results.
 
@@ -146,6 +172,7 @@ def create_hyperopt_dir(base_dir='hyperopt_'):
             os.makedirs(dir_name)
             return dir_name
         idx += 1
+
 
 def initialize_cuda():
     if torch.cuda.is_available():
@@ -169,16 +196,11 @@ def save_trial_to_csv(trial, hyperopt_dir, trial_value):
     Returns:
         None: Writes the trial data to a CSV file.
     """
-    csv_path = os.path.join(hyperopt_dir, 'optuna_results.csv')
-    with open(csv_path, 'a', newline='') as csvfile:
+    csv_path = os.path.join(hyperopt_dir, "optuna_results.csv")
+    with open(csv_path, "a", newline="") as csvfile:
         writer = csv.writer(csvfile)
-        if os.path.getsize(csv_path) == 0:  
-            headers = ['Trial'] + ['Value'] + [key for key in trial.params.keys()]
+        if os.path.getsize(csv_path) == 0:
+            headers = ["Trial"] + ["Value"] + [key for key in trial.params.keys()]
             writer.writerow(headers)
         row = [trial.number] + [trial_value] + list(trial.params.values())
         writer.writerow(row)
-
-
-
-
-

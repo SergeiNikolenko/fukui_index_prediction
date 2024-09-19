@@ -33,7 +33,7 @@ process_file() {
   mv "$inp_file" "$TMP_DIR/$base_name.inp"
 
   /opt/software/orca/orca "$TMP_DIR/$base_name.inp" > "$tmp_out_file"
-  
+
   if [ $? -eq 0 ]; then
     echo "[$(date '+%H:%M:%S')] [SUCCESS] Completed: $base_name"
     mv "$tmp_out_file" "$OUT_DIR/"

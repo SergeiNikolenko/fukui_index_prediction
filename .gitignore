@@ -1,6 +1,6 @@
 # Data
 /data/
-
+.cache/
 # Mac OS-specific storage files
 .DS_Store
 

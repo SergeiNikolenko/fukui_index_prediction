@@ -6,7 +6,7 @@ LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
 
   | Name           | Type  | Params
 -----------------------------------------
-0 | model_backbone | Model | 3.7 M 
+0 | model_backbone | Model | 3.7 M
 -----------------------------------------
 3.7 M     Trainable params
 0         Non-trainable params

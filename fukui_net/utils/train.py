@@ -1,14 +1,13 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
+import pytorch_lightning as pl
 import torch
 import torch.nn as nn
-from torch_scatter import scatter_mean
 import torch.nn.functional as F
-from torch_geometric.nn import ChebConv
-import pytorch_lightning as pl
-from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
-
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from torch_geometric.loader import DataLoader
+from torch_geometric.nn import ChebConv
+from torch_scatter import scatter_mean
 
 from fukui_net.utils.efficient_kan import KAN, KANLinear
 
@@ -27,13 +26,23 @@ class MoleculeModel(pl.LightningModule):
         batch_size (int): Number of samples per batch.
         metric (function): Metric function used to compute the loss.
     """
-    
-    def __init__(self, model_backbone, optimizer_class, learning_rate, weight_decay, step_size, gamma, batch_size, metric='rmse'):
-        super(MoleculeModel, self).__init__()
+
+    def __init__(
+        self,
+        model_backbone,
+        optimizer_class,
+        learning_rate,
+        weight_decay,
+        step_size,
+        gamma,
+        batch_size,
+        metric="rmse",
+    ):
+        super().__init__()
         self.model_backbone = model_backbone
         self.batch_size = batch_size
         self.metric = self.get_metric(metric)
-        self.save_hyperparameters(ignore=['model_backbone'])
+        self.save_hyperparameters(ignore=["model_backbone"])
 
     def forward(self, x, edge_index, edge_attr):
         """
@@ -48,7 +57,7 @@ class MoleculeModel(pl.LightningModule):
             torch.Tensor: Model predictions.
         """
         return self.model_backbone(x, edge_index, edge_attr)
-    
+
     def configure_optimizers(self):
         """
         Configures the optimizer and learning rate scheduler.
@@ -56,8 +65,14 @@ class MoleculeModel(pl.LightningModule):
         Returns:
             tuple: A tuple containing the optimizer and scheduler.
         """
-        optimizer = self.hparams.optimizer_class(self.parameters(), lr=self.hparams.learning_rate, weight_decay=self.hparams.weight_decay)
-        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=self.hparams.step_size, gamma=self.hparams.gamma)
+        optimizer = self.hparams.optimizer_class(
+            self.parameters(),
+            lr=self.hparams.learning_rate,
+            weight_decay=self.hparams.weight_decay,
+        )
+        scheduler = torch.optim.lr_scheduler.StepLR(
+            optimizer, step_size=self.hparams.step_size, gamma=self.hparams.gamma
+        )
         return [optimizer], [scheduler]
 
     def on_train_start(self):
@@ -81,9 +96,18 @@ class MoleculeModel(pl.LightningModule):
         """
         y_hat = self(batch.x, batch.edge_index, batch.edge_attr)
         loss = self.metric(batch.y, y_hat)
-        self.log('train_loss', loss, batch_size=self.batch_size, on_step=True, on_epoch=True, prog_bar=True, logger=True, enable_graph=True)
+        self.log(
+            "train_loss",
+            loss,
+            batch_size=self.batch_size,
+            on_step=True,
+            on_epoch=True,
+            prog_bar=True,
+            logger=True,
+            enable_graph=True,
+        )
         return loss
-    
+
     def validation_step(self, batch, batch_idx):
         """
         Performs a single validation step.
@@ -94,7 +118,16 @@ class MoleculeModel(pl.LightningModule):
         """
         y_hat = self(batch.x, batch.edge_index, batch.edge_attr)
         val_loss = self.metric(batch.y, y_hat)
-        self.log('val_loss', val_loss, batch_size=self.batch_size, on_step=True, on_epoch=True, prog_bar=True, logger=True, enable_graph=True)
+        self.log(
+            "val_loss",
+            val_loss,
+            batch_size=self.batch_size,
+            on_step=True,
+            on_epoch=True,
+            prog_bar=True,
+            logger=True,
+            enable_graph=True,
+        )
 
     def test_step(self, batch, batch_idx):
         """
@@ -113,16 +146,18 @@ class MoleculeModel(pl.LightningModule):
 
         data = []
         start_idx = 0
-        for i, num_atoms in enumerate(batch.ptr[:-1]): 
-            end_idx = batch.ptr[i+1].item()
+        for i, num_atoms in enumerate(batch.ptr[:-1]):
+            end_idx = batch.ptr[i + 1].item()
             molecule_preds = preds_np[start_idx:end_idx]
             molecule_true_values = true_values_np[start_idx:end_idx]
 
-            data.append({
-                'smiles': batch.smiles[i],
-                'predictions': molecule_preds,
-                'true_values': molecule_true_values
-            })
+            data.append(
+                {
+                    "smiles": batch.smiles[i],
+                    "predictions": molecule_preds,
+                    "true_values": molecule_true_values,
+                }
+            )
 
             start_idx = end_idx
         return data
@@ -140,33 +175,33 @@ class MoleculeModel(pl.LightningModule):
         all_data = [item for batch_data in outputs for item in batch_data]
         self.df_results = pd.DataFrame(all_data)
 
-        all_predictions = np.concatenate(self.df_results['predictions'].values)
-        all_true_values = np.concatenate(self.df_results['true_values'].values)
+        all_predictions = np.concatenate(self.df_results["predictions"].values)
+        all_true_values = np.concatenate(self.df_results["true_values"].values)
 
         rmse = np.sqrt(mean_squared_error(all_true_values, all_predictions))
         mse = mean_squared_error(all_true_values, all_predictions)
         r2 = r2_score(all_true_values, all_predictions)
         mae = mean_absolute_error(all_true_values, all_predictions)
 
-        self.log('test_rmse', rmse)
-        self.log('test_mse', mse)
-        self.log('test_r2', r2)
-        self.log('test_mae', mae)
+        self.log("test_rmse", rmse)
+        self.log("test_mse", mse)
+        self.log("test_r2", r2)
+        self.log("test_mae", mae)
 
-        print(f'Test RMSE: {rmse:.4f}')
-        print(f'Test MSE: {mse:.4f}')
-        print(f'Test R²: {r2:.4f}')
-        print(f'Test MAE: {mae:.4f}')
+        print(f"Test RMSE: {rmse:.4f}")
+        print(f"Test MSE: {mse:.4f}")
+        print(f"Test R²: {r2:.4f}")
+        print(f"Test MAE: {mae:.4f}")
 
         return self.df_results
-    
+
     def on_epoch_end(self):
         """
         Hook to log parameter histograms at the end of each epoch.
         """
         for name, param in self.named_parameters():
             self.logger.experiment.add_histogram(name, param, self.current_epoch)
-            
+
     def log_activations_hook(self, layer_name):
         """
         Hook to log activations for a given layer.
@@ -177,9 +212,13 @@ class MoleculeModel(pl.LightningModule):
         Returns:
             function: A hook function.
         """
+
         def hook(module, input, output):
-            if self.logger: 
-                self.logger.experiment.add_histogram(f"{layer_name}_activations", output, self.current_epoch)
+            if self.logger:
+                self.logger.experiment.add_histogram(
+                    f"{layer_name}_activations", output, self.current_epoch
+                )
+
         return hook
 
     def get_metric(self, metric_name):
@@ -195,18 +234,23 @@ class MoleculeModel(pl.LightningModule):
         Raises:
             ValueError: If an unknown metric name is provided.
         """
-        if metric_name == 'mse':
+        if metric_name == "mse":
+
             def mse(y_true, y_pred):
                 return F.mse_loss(y_pred, y_true)
+
             return mse
 
-        elif metric_name == 'rmse':
+        elif metric_name == "rmse":
+
             def rmse(y_true, y_pred):
                 return torch.sqrt(F.mse_loss(y_pred, y_true))
+
             return rmse
 
         else:
             raise ValueError(f"Unknown metric name: {metric_name}")
+
 
 class AtomEdgeInteraction(nn.Module):
     """
@@ -219,16 +263,29 @@ class AtomEdgeInteraction(nn.Module):
         edge_importance (float): Scaling factor for edge features.
         interaction (nn.Linear): Linear layer to process combined atom and edge features.
     """
-    
-    def __init__(self, in_features, edge_features, out_features, edge_importance=1.0, dropout_rate=0.1, use_batch_norm=True):
-        super(AtomEdgeInteraction, self).__init__()
+
+    def __init__(
+        self,
+        in_features,
+        edge_features,
+        out_features,
+        edge_importance=1.0,
+        dropout_rate=0.1,
+        use_batch_norm=True,
+    ):
+        super().__init__()
         self.edge_importance = edge_importance
         self.interaction = KANLinear(in_features + edge_features, out_features)
         self.activation = nn.ReLU()
-        self.batch_norm = nn.BatchNorm1d(out_features) if use_batch_norm else nn.Identity()
+        self.batch_norm = (
+            nn.BatchNorm1d(out_features) if use_batch_norm else nn.Identity()
+        )
         self.dropout = nn.Dropout(dropout_rate)
-        self.residual = nn.Linear(in_features, out_features) if in_features != out_features else nn.Identity()
-
+        self.residual = (
+            nn.Linear(in_features, out_features)
+            if in_features != out_features
+            else nn.Identity()
+        )
 
     def forward(self, x, edge_index, edge_attr):
         """
@@ -255,11 +312,10 @@ class AtomEdgeInteraction(nn.Module):
         return x + residual_features
 
 
-
 class Model(nn.Module):
     """
-    A neural network model designed for molecular graph data, leveraging KANLinear layers, 
-    Chebyshev convolutions, and various preprocessing and postprocessing layers. 
+    A neural network model designed for molecular graph data, leveraging KANLinear layers,
+    Chebyshev convolutions, and various preprocessing and postprocessing layers.
 
     Attributes:
         atom_preprocess (nn.ModuleList): List of preprocessing layers for node features.
@@ -281,32 +337,71 @@ class Model(nn.Module):
         out_features (int): Number of output features.
     """
 
-    def __init__(self, atom_in_features, edge_attr_dim, preprocess_hidden_features, cheb_hidden_features, K, cheb_normalizations, dropout_rates, activation_fns, use_batch_norm, postprocess_hidden_features, out_features):
-        super(Model, self).__init__()
+    def __init__(
+        self,
+        atom_in_features,
+        edge_attr_dim,
+        preprocess_hidden_features,
+        cheb_hidden_features,
+        K,
+        cheb_normalizations,
+        dropout_rates,
+        activation_fns,
+        use_batch_norm,
+        postprocess_hidden_features,
+        out_features,
+    ):
+        super().__init__()
 
-        self.atom_preprocess = nn.ModuleList([AtomEdgeInteraction(atom_in_features, edge_attr_dim, preprocess_hidden_features[0], dropout_rate=dropout_rates[0], use_batch_norm=use_batch_norm[0])])
+        self.atom_preprocess = nn.ModuleList(
+            [
+                AtomEdgeInteraction(
+                    atom_in_features,
+                    edge_attr_dim,
+                    preprocess_hidden_features[0],
+                    dropout_rate=dropout_rates[0],
+                    use_batch_norm=use_batch_norm[0],
+                )
+            ]
+        )
         for i in range(1, len(preprocess_hidden_features)):
             layer = nn.Sequential(
-                KANLinear(preprocess_hidden_features[i-1], preprocess_hidden_features[i]),
-                nn.BatchNorm1d(preprocess_hidden_features[i]) if use_batch_norm[i] else nn.Identity(),
+                KANLinear(
+                    preprocess_hidden_features[i - 1], preprocess_hidden_features[i]
+                ),
+                nn.BatchNorm1d(preprocess_hidden_features[i])
+                if use_batch_norm[i]
+                else nn.Identity(),
                 activation_fns[i](),
-                nn.Dropout(dropout_rates[i])
+                nn.Dropout(dropout_rates[i]),
             )
             self.atom_preprocess.append(layer)
 
         self.cheb_convolutions = nn.ModuleList()
         in_channels = preprocess_hidden_features[-1]
         for i in range(len(cheb_hidden_features)):
-            self.cheb_convolutions.append(ChebConv(in_channels, cheb_hidden_features[i], K[i], normalization=cheb_normalizations[i]))
+            self.cheb_convolutions.append(
+                ChebConv(
+                    in_channels,
+                    cheb_hidden_features[i],
+                    K[i],
+                    normalization=cheb_normalizations[i],
+                )
+            )
             in_channels = cheb_hidden_features[i]
 
         self.postprocess = nn.ModuleList()
         for i in range(len(postprocess_hidden_features)):
             layer = nn.Sequential(
-                KANLinear(cheb_hidden_features[i-1] if i > 0 else cheb_hidden_features[-1], postprocess_hidden_features[i]),
-                nn.BatchNorm1d(postprocess_hidden_features[i]) if use_batch_norm[len(preprocess_hidden_features) + i] else nn.Identity(),
+                KANLinear(
+                    cheb_hidden_features[i - 1] if i > 0 else cheb_hidden_features[-1],
+                    postprocess_hidden_features[i],
+                ),
+                nn.BatchNorm1d(postprocess_hidden_features[i])
+                if use_batch_norm[len(preprocess_hidden_features) + i]
+                else nn.Identity(),
                 activation_fns[len(preprocess_hidden_features) + i](),
-                nn.Dropout(dropout_rates[len(preprocess_hidden_features) + i])
+                nn.Dropout(dropout_rates[len(preprocess_hidden_features) + i]),
             )
             self.postprocess.append(layer)
 
@@ -335,7 +430,17 @@ class CrossValDataModule(pl.LightningDataModule):
         self.num_workers = num_workers
 
     def train_dataloader(self):
-        return DataLoader(self.train_dataset, batch_size=self.batch_size, shuffle=True, num_workers=self.num_workers)
-    
+        return DataLoader(
+            self.train_dataset,
+            batch_size=self.batch_size,
+            shuffle=True,
+            num_workers=self.num_workers,
+        )
+
     def val_dataloader(self):
-        return DataLoader(self.val_dataset, batch_size=self.batch_size, shuffle=False, num_workers=self.num_workers)
+        return DataLoader(
+            self.val_dataset,
+            batch_size=self.batch_size,
+            shuffle=False,
+            num_workers=self.num_workers,
+        )

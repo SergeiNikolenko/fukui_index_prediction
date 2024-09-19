@@ -8,9 +8,9 @@ LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
   | Name              | Type       | Params
 -------------------------------------------------
 0 | atom_preprocess   | ModuleList | 23.4 M
-1 | cheb_convolutions | ModuleList | 2.4 M 
+1 | cheb_convolutions | ModuleList | 2.4 M
 2 | postprocess       | ModuleList | 33.5 K
-3 | output_layer      | Linear     | 129   
+3 | output_layer      | Linear     | 129
 -------------------------------------------------
 25.9 M    Trainable params
 0         Non-trainable params

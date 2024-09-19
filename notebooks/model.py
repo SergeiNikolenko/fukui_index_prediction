@@ -1,20 +1,27 @@
 # %% [markdown]
 # ## Import Libraries and Set Up Environment
 
+import random
+
 # %%
 # Import necessary libraries
 import warnings
-import torch
+
 import numpy as np
-import random
-from torch.utils.data import Subset
-from sklearn.model_selection import KFold
 import pytorch_lightning as pl
-from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping, Timer
-from pytorch_lightning import Trainer
-from fukui_net.utils.utils import MoleculeDataModule, initialize_cuda, evaluate_model_full
-from fukui_net.utils.train import MoleculeModel, Model, CrossValDataModule
+import torch
 from lion_pytorch import Lion
+from pytorch_lightning import Trainer
+from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint, Timer
+from sklearn.model_selection import KFold
+from torch.utils.data import Subset
+
+from fukui_net.utils.train import CrossValDataModule, Model, MoleculeModel
+from fukui_net.utils.utils import (
+    MoleculeDataModule,
+    evaluate_model_full,
+    initialize_cuda,
+)
 
 # Set random seeds for reproducibility
 torch.manual_seed(42)
@@ -25,8 +32,14 @@ random.seed(42)
 initialize_cuda()
 
 # Suppress unnecessary warnings
-warnings.filterwarnings("ignore", category=UserWarning, module="pytorch_lightning.trainer.connectors.data_connector")
-warnings.filterwarnings("ignore", category=UserWarning, module="lightning_fabric.plugins.environments.slurm")
+warnings.filterwarnings(
+    "ignore",
+    category=UserWarning,
+    module="pytorch_lightning.trainer.connectors.data_connector",
+)
+warnings.filterwarnings(
+    "ignore", category=UserWarning, module="lightning_fabric.plugins.environments.slurm"
+)
 
 # Ensure deterministic behavior in CUDA operations
 torch.backends.cudnn.deterministic = True
@@ -37,25 +50,31 @@ torch.backends.cudnn.benchmark = False
 
 # %%
 # Load dataset
-dataset = torch.load(f'../data/processed/QM_137k.pt')
+dataset = torch.load(f"../data/processed/QM_137k.pt")
 in_features = dataset[0].x.shape[1]
 out_features = 1
 edge_attr_dim = dataset[0].edge_attr.shape[1]
 
 # Data module settings
-batch_size = 1024 
-num_workers = 8  
+batch_size = 1024
+num_workers = 8
 
 # Define the model architecture parameters
 preprocess_hidden_features = [128] * 9
 postprocess_hidden_features = [128, 128]
 cheb_hidden_features = [128, 128]
 K = [10, 16]
-cheb_normalization = ['sym', 'sym']
+cheb_normalization = ["sym", "sym"]
 
-dropout_rates = [0.0] * (len(preprocess_hidden_features) + len(postprocess_hidden_features))
-activation_fns = [torch.nn.PReLU] * (len(preprocess_hidden_features) + len(postprocess_hidden_features))
-use_batch_norm = [True] * (len(preprocess_hidden_features) + len(postprocess_hidden_features))
+dropout_rates = [0.0] * (
+    len(preprocess_hidden_features) + len(postprocess_hidden_features)
+)
+activation_fns = [torch.nn.PReLU] * (
+    len(preprocess_hidden_features) + len(postprocess_hidden_features)
+)
+use_batch_norm = [True] * (
+    len(preprocess_hidden_features) + len(postprocess_hidden_features)
+)
 
 # Optimizer settings
 optimizer_class = Lion
@@ -63,7 +82,7 @@ learning_rate = 2.2e-5
 weight_decay = 3e-5
 step_size = 80
 gamma = 0.2
-metric = 'rmse'
+metric = "rmse"
 
 # %% [markdown]
 # ## Instantiate Model Backbone
@@ -81,7 +100,7 @@ backbone = Model(
     activation_fns=activation_fns,
     use_batch_norm=use_batch_norm,
     postprocess_hidden_features=postprocess_hidden_features,
-    out_features=out_features
+    out_features=out_features,
 )
 
 # %%
@@ -96,7 +115,7 @@ kf = KFold(n_splits=n_splits, shuffle=True, random_state=42)
 data_indices = list(range(len(dataset)))
 
 fold_results = []
-best_val_loss = float('inf')
+best_val_loss = float("inf")
 best_model = None
 
 # %% [markdown]
@@ -110,7 +129,9 @@ for fold, (train_index, val_index) in enumerate(kf.split(data_indices)):
     # Create data subsets for this fold
     train_subset = Subset(dataset, train_index)
     val_subset = Subset(dataset, val_index)
-    data_module = CrossValDataModule(train_subset, val_subset, batch_size=batch_size, num_workers=num_workers)
+    data_module = CrossValDataModule(
+        train_subset, val_subset, batch_size=batch_size, num_workers=num_workers
+    )
 
     # Initialize model for this fold
     model = MoleculeModel(
@@ -121,14 +142,25 @@ for fold, (train_index, val_index) in enumerate(kf.split(data_indices)):
         step_size=step_size,
         gamma=gamma,
         batch_size=batch_size,
-        metric=metric
+        metric=metric,
     )
 
     # Callbacks for model checkpointing and early stopping
-    checkpoint_callback = ModelCheckpoint(monitor='val_loss', mode='min', save_top_k=1, verbose=True, dirpath='.', filename='best_model')
-    early_stop_callback = EarlyStopping(monitor='val_loss', patience=5, verbose=True, mode='min')
+    checkpoint_callback = ModelCheckpoint(
+        monitor="val_loss",
+        mode="min",
+        save_top_k=1,
+        verbose=True,
+        dirpath=".",
+        filename="best_model",
+    )
+    early_stop_callback = EarlyStopping(
+        monitor="val_loss", patience=5, verbose=True, mode="min"
+    )
     timer = Timer()
-    logger = pl.loggers.TensorBoardLogger('../reports/tb_logs', name=f'KAN_fold_{fold+1}')
+    logger = pl.loggers.TensorBoardLogger(
+        "../reports/tb_logs", name=f"KAN_fold_{fold+1}"
+    )
 
     # Trainer configuration
     trainer = Trainer(
@@ -137,8 +169,8 @@ for fold, (train_index, val_index) in enumerate(kf.split(data_indices)):
         callbacks=[early_stop_callback, timer],
         enable_progress_bar=False,
         logger=logger,
-        accelerator='gpu',
-        devices=1
+        accelerator="gpu",
+        devices=1,
     )
 
     # Train the model
@@ -152,7 +184,6 @@ for fold, (train_index, val_index) in enumerate(kf.split(data_indices)):
     if val_loss < best_val_loss:
         best_val_loss = val_loss
         best_model = model
-
 
     seconds = timer.time_elapsed()
     h, m, s = int(seconds // 3600), int((seconds % 3600) // 60), int(seconds % 60)
@@ -181,5 +212,3 @@ print(f"Final best model saved!")
 # %%
 # Evaluate the final model on the entire dataset
 evaluate_model_full(best_model, dataset, batch_size, num_workers)
-
-

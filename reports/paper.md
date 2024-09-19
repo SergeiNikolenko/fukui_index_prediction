@@ -44,7 +44,7 @@ Keywords: Molecular Reactivity, Fukui Index, Graph Neural Networks, Chebyshev Po
 **Ссылки:**
 
 1. **Chemprop:** Yang, K., Swanson, K., Jin, W., Coley, C. W., Eiden, P., Gao, H., ... & Jaakkola, T. (2019). Analyzing Learned Molecular Representations for Property Prediction. *Journal of Chemical Information and Modeling*, 59(8), 3370-3388.
-  
+
 2. **Regio-selectivity prediction:** Guan, Y., Coley, C. W., Wu, H., Ranasinghe, D., Heid, E., Struble, T. J., Pattanaik, L., Green, W. H., & Jensen, K. F. (2021). Regio-selectivity prediction with a machine-learned reaction representation and on-the-fly quantum mechanical descriptors. *Chemical Science*, 12(2), 567-576.
 
 3. **Graph Convolutional Networks:** Wu, Z., Ramsundar, B., Feinberg, E. N., Gomes, J., Geniesse, C., Pappu, A. S., ... & Pande, V. S. (2018). MoleculeNet: A benchmark for molecular machine learning. *Chemical Science*, 9(2), 513-530.
@@ -103,9 +103,9 @@ f^-(\mathbf{r}) = \rho_{\text{N+1}}(\mathbf{r}) - \rho_{\text{N}}(\mathbf{r})
 
 СДЕЛАТЬ распределение для нашей бд и как получили
 
-СДЕЛАТЬ описание пайплайна взяли лекарства из 1 2 фазы с чембла 
-расчитали через из смайлсов в mopac оптимизация затем orca 5 
-получившиеся результаты орбиталей в janpa сумировали 
+СДЕЛАТЬ описание пайплайна взяли лекарства из 1 2 фазы с чембла
+расчитали через из смайлсов в mopac оптимизация затем orca 5
+получившиеся результаты орбиталей в janpa сумировали
 надо на зенодо запостить
 
 https://zenodo.org/records/13341972
@@ -133,10 +133,10 @@ where the CDD leverages Hirshfeld charges and Fukui indices (both electron and n
 Эти параметры были оптимизированы для достижения высокой точности модели на задачах предсказания молекулярных свойств, обеспечивая устойчивость и точность результатов на всех этапах обучения.
 
 красивая картинка архитектуры
-использовали KAN он быстрее 
-линейных слоев 
+использовали KAN он быстрее
+линейных слоев
 
-в кан можно увидеть формулы (сделать) 
+в кан можно увидеть формулы (сделать)
 
 
 как основа чебышев torch скатер для обьединения лион как оптимайзер
@@ -144,7 +144,7 @@ where the CDD leverages Hirshfeld charges and Fukui indices (both electron and n
 Что пробовали чебышев гат тенгоры и тд (сводная таблица в саплиментари)
 https://github.com/Blealtan/efficient-kan
 
-### результаты 
+### результаты
 
 сделали точнее чем существующий резульат (пример статья)
 
