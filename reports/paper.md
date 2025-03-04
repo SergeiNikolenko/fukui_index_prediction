@@ -146,6 +146,77 @@ https://github.com/Blealtan/efficient-kan
 
 ### результаты
 
-сделали точнее чем существующий резульат (пример статья)
+Ниже представлена итоговая таблица с результатами по RMSE для всех рассмотренных моделей, а также результат модели из статьи:
+
+| Модель              | RMSE    |
+|---------------------|---------|
+| ChebConv_PReLU      | 0.023   |
+| ChebConv_KAN_ReLU   | **0.019**   |
+| GraphSAGE           | 0.035   |
+| TransformerConv     | 0.35    |
+| GINEConv            | 0.35    |
+| Guan et al. (2021)  | 0.02573 |
+
+Эта таблица отражает, что лучшим результатом (наименьшим RMSE) обладает модель ChebConv_KAN_ReLU (0.019), тогда как TransformerConv и GINEConv показывают значительно худшие значения (0.35). Результат модели из статьи Guan et al. (2021) составляет 0.02573.
+
+- **ChebConv_PReLU**
+  Использует 9 полносвязных слоёв для предобработки, за которыми следуют 2 слоя Chebyshev Convolution с порядками 10 и 16. Для активации применяется PReLU, а промежуточные слои снабжены пакетной нормализацией. Затем идёт 2 слоя постобработки и выходной линейный слой для получения скалярного результата.
+
+- **ChebConv_KAN_ReLU**
+  По структуре схожа с предыдущей моделью, но вместо стандартных линейных слоёв используются KANLinear модули, а в качестве функции активации применяется ReLU.
+
+- **GraphSAGE**
+  Состоит из 9 слоёв предобработки (полносвязных, с PReLU и BatchNorm), за которыми следуют 2 слоя GraphSAGE с агрегацией «mean» (размерности 128 → 1024 → 1024). После графовых слоёв применяется блок постобработки с двумя линейными слоями, завершающий выходной линейный слой.
+
+- **TransformerConv**
+  Имеет два отдельных блока предобработки: один для признаков узлов, другой для признаков связей (в каждом блоке 9 слоёв с PReLU и BatchNorm). Далее применяются 2 слоя TransformerConv с многоголовым вниманием (первый — 16 голов, второй — 20 голов), после чего следует постобработка и выходной линейный слой.
+
+- **GINEConv**
+  Обрабатывает признаки узлов и связей через начальные линейные слои (333→64 для узлов, 414→64 для связей). Затем идут 2 слоя GINEConv, каждый из которых включает внутренний MLP (с двумя линейными слоями и ReLU). После них следует постобработка с несколькими линейными слоями, завершающая линейная проекция до скалярного выхода. Архитектура компактна и содержит значительно меньше параметров.
+
+### лучшая модель
+```
+Model:
+ MoleculeModel(
+  (model_backbone): Model(
+    (atom_preprocess): ModuleList(
+      (0): AtomEdgeInteraction(
+        (interaction): KANLinear(
+          (base_activation): SiLU()
+        )
+        (activation): ReLU()
+        (batch_norm): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+        (residual): Linear(in_features=133, out_features=128, bias=True)
+      )
+      (1-8): 8 x Sequential(
+        (0): KANLinear(
+          (base_activation): SiLU()
+        )
+        (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): PReLU(num_parameters=1)
+        (3): Dropout(p=0.0, inplace=False)
+      )
+    )
+    (cheb_convolutions): ModuleList(
+      (0): ChebConv(128, 128, K=10, normalization=sym)
+      (1): ChebConv(128, 128, K=16, normalization=sym)
+    )
+    (postprocess): ModuleList(
+      (0-1): 2 x Sequential(
+        (0): KANLinear(
+          (base_activation): SiLU()
+        )
+        (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): PReLU(num_parameters=1)
+        (3): Dropout(p=0.0, inplace=False)
+      )
+    )
+    (output_layer): KANLinear(
+      (base_activation): SiLU()
+    )
+  )
+)
+```
 
 ### Добавить результат в конду и пип
